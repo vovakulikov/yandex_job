@@ -1,31 +1,70 @@
 const cards = [
     {
         from: 'Saint-Petesburg',
-        to: 'Moscow'
+        to: 'Moscow',
+        type: 'train',
+        number: '78A',
+        addInfo: {
+        	'Seat': '45B'
+        }
     },
     {
         from: 'Rostov',
-        to: 'Krasnodar'
+        to: 'Krasnodar',
+        type: 'flight',
+        number: 'SK22',
+        addInfo: {
+        	'Gate': 22,
+        	'Seat': '3A',
+        	'Baggage': 'will be automatically transferred from your last leg.'
+       	}
+
     },
     {
         from: 'Kaliningrad',
-        to: 'Rostov'
+        to: 'Rostov',
+        type: 'flight',
+        number: 'SK445',
+        addInfo: {
+        	'Seat': '3A',
+        	'Baggage': 'drop at ticket counter 344'
+       	}
     },
     {
         from: 'Moscow',
-        to: 'Kaliningrad'
+        to: 'Kaliningrad',
+        type: 'bus',
+        number: '78A',
+        addInfo: {
+        	'': ' No seat assignment'
+        }
     },
     {
         from: 'Krasnodar',
-        to: 'Pushkin'
+        to: 'Pushkin',
+        type: 'bus',
+        number: '78A',
+        addInfo: {
+        	'': ' No seat assignment'
+        }
     },
     {
         from: 'Pskov',
-        to: 'Kazan'
+        to: 'Kazan',
+        type: 'bus',
+        number: '78A',
+        addInfo: {
+        	'': ' No seat assignment'
+        }
     },
     {
         from: 'Pushkin',
-        to: 'Pskov'
+        to: 'Pskov',
+        type: 'bus',
+        number: '78A',
+        addInfo: {
+        	'': ' No seat assignment'
+        }
     },
 
 ];
@@ -36,6 +75,7 @@ class RoudCards {
         const ticketBook = this.makeTicketsBook(cards);
         const pointA = this.findStartPoint(cards, ticketBook.toFields);
 
+        this.sortTicketArray = [];
         this.sortTicket(pointA, ticketBook.store);
     }
 
@@ -82,18 +122,43 @@ class RoudCards {
     }
 
     /**
-     * Поиск начальной точки
+     * Сортировка посдочных карточек
      *
      * @param {Object} point — посадочная карточка для начального пункта.
      * @param {Object} store — объект маршрута  key - пункт отправление store[key] — исходная кароточка
      * @returns {Array} остортированный список посадочных карточек
      */
-    sortTicket (point, store) {
-        console.log('From -> ', point.from, ' To -> ', point.to);
+    sortTicket (startTicket, store) {
+        // console.log('From -> ', point.from, ' To -> ', point.to);
+        const sortTicketArray = [];
+        let description = '';
+        let currentTicket = startTicket;
 
-        if (store.hasOwnProperty(point.to))
-            this.sortTicket(store[point.to], store);
+        while (currentTicket) {
+        	sortTicketArray.push(currentTicket);
+        	description = description + this.makeTextDescription(currentTicket)+ '\n';
+        	currentTicket = store[currentTicket.to];
+        }
+
+        this.sortTicketArray = sortTicketArray;
+        //console.log(sortTicketArray)
+        console.log(description)
+        return sortTicketArray;
     }
+
+    makeTextDescription (ticket) {
+    	const makeAddInfo = (addInfo) => {
+    		let str= '';
+    		for( let key in addInfo) {
+    			str = str + `${key} - ${addInfo[key]}`
+    		}
+    		return str;
+    	}
+    	const addInfo = makeAddInfo(ticket.addInfo);
+
+    	return `Take ${ticket.type} ${ticket.number} from ${ticket.from} to ${ticket.to}. ${addInfo}`
+    }
+
 }
 
 const roudCards = new RoudCards(cards);
