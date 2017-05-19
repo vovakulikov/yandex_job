@@ -75,8 +75,10 @@ class RoudCards {
         const ticketBook = this.makeTicketsBook(cards);
         const pointA = this.findStartPoint(cards, ticketBook.toFields);
 
-        this.sortTicketArray = [];
-        this.sortTicket(pointA, ticketBook.store);
+
+        this.description = '';
+        this.sortTicketArray = this.sortTicket(pointA, ticketBook.store);
+        
     }
 
     /**
@@ -139,18 +141,20 @@ class RoudCards {
         	description = description + this.makeTextDescription(currentTicket)+ '\n';
         	currentTicket = store[currentTicket.to];
         }
-
-        this.sortTicketArray = sortTicketArray;
-        //console.log(sortTicketArray)
-        console.log(description)
+        this.description = description;
         return sortTicketArray;
     }
-
+	/**
+     * Шаблон для текстового описания посдочной карточеке
+     *
+     * @param {Object} ticket — посадочная карточка.
+     * @returns {Stirng} — текстовое описание посадочной карточки
+     */
     makeTextDescription (ticket) {
     	const makeAddInfo = (addInfo) => {
     		let str= '';
     		for( let key in addInfo) {
-    			str = str + `${key} - ${addInfo[key]}`
+    			str = str + `${key} ${addInfo[key]}`
     		}
     		return str;
     	}
@@ -163,3 +167,5 @@ class RoudCards {
 
 const roudCards = new RoudCards(cards);
 
+console.log(roudCards.sortTicketArray)
+console.log(roudCards.description)
